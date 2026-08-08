@@ -14,14 +14,12 @@ elif [[ -z "${OUTPUT_DIR:-}" ]] || [[ ! -d $OUTPUT_DIR ]]; then
     exit 1
 fi
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
-if ! find "$CERT_DIR" -type f -name '*.json' -exec "$SCRIPT_DIR"/main '{}' \;
+if ! find "$CERT_DIR" -type f -name '*.json' -exec /etc/s6-overlay/s6-rc.d/svc-mod-zncfik-mod/main '{}' \;
 then
     print -u 2 "Initial cert extraction failed"
     exit 1
 fi
 
 inotifyd - "${CERT_DIR}:ny" | while IFS=$'\t' read -r e d f; do
-    "$SCRIPT_DIR"/main "$d/$f"
+    /etc/s6-overlay/s6-rc.d/svc-mod-zncfik-mod/main "$d/$f"
 done
