@@ -1,22 +1,22 @@
 #!/usr/bin/with-contenv bash
 
 if [[ -z "${CERT_RESOLVER:-}" ]]; then
-    print -u 2 "CERT_RESOLVER not set"
+    echo "CERT_RESOLVER not set" >&2
     exit 1
 elif [[ -z "${MAIN_DOMAIN:-}" ]]; then
-    print -u 2 "MAIN_DOMAIN not set"
+    echo "MAIN_DOMAIN not set" >&2
     exit 1
 elif [[ -z "${CERT_DIR:-}" ]] || [[ ! -d $CERT_DIR ]]; then
-    print -u 2 "CERT_DIR not set or not found"
+    echo "CERT_DIR not set or not found" >&2
     exit 1
 elif [[ -z "${OUTPUT_DIR:-}" ]] || [[ ! -d $OUTPUT_DIR ]]; then
-    print -u 2 "OUTPUT_DIR not set or not found"
+    echo "OUTPUT_DIR not set or not found" >&2
     exit 1
 fi
 
 if ! find "$CERT_DIR" -type f -name '*.json' -exec /etc/s6-overlay/s6-rc.d/svc-mod-zncfik-mod/main '{}' \;
 then
-    print -u 2 "Initial cert extraction failed"
+    echo "Initial cert extraction failed" >&2
     exit 1
 fi
 

@@ -4,7 +4,7 @@ set -euo pipefail
 ACME_JSON="$1"
 
 if ! cert=$(jq -ec ".${CERT_RESOLVER}.Certificates[] | select(.domain.main == \"${MAIN_DOMAIN}\")" <"$ACME_JSON"); then
-    print -u 2 "Could not find certificate for CERT_RESOLVER=$CERT_RESOLVER and MAIN_DOMAIN=$MAIN_DOMAIN @ $ACME_JSON"
+    echo "Could not find certificate for CERT_RESOLVER=$CERT_RESOLVER and MAIN_DOMAIN=$MAIN_DOMAIN @ $ACME_JSON" >&2
     exit 0
 fi
 
