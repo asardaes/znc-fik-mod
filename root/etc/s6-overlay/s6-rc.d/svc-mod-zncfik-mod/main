@@ -1,0 +1,19 @@
+#!/bin/bash
+set -euo pipefail
+
+ACME_JSON="$1"
+
+if ! cert=$(jq -ec ".${CERT_RESOLVER}.Certificates[] | select(.domain.main == \"${MAIN_DOMAIN}\")" <"$ACME_JSON"); then
+    print -u 2 "Could not find certificate for CERT_RESOLVER=$CERT_RESOLVER and MAIN_DOMAIN=$MAIN_DOMAIN @ $ACME_JSON"
+    exit 0
+fi
+
+TMP_DIR=$(mktemp)
+trap "rm -r $TMP_DIR" INT TERM EXIT
+
+jq -r '.certificate' | bas64 -d >"$TMP_DIR/cert.pem"
+jq -r '.key' | bas64 -d >"$TMP_DIR/key.pem"
+
+chown "$PUID:$PGID" "$TMP_DIR"/*
+chmod 600 "$TMP_DIR"/*
+mv "$TMP_DIR"/* "$OUTPUT_DIR"

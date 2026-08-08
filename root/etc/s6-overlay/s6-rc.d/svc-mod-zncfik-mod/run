@@ -1,0 +1,27 @@
+#!/usr/bin/with-contenv bash
+
+if [[ -z "${CERT_RESOLVER:-}" ]]; then
+    print -u 2 "CERT_RESOLVER not set"
+    exit 1
+elif [[ -z "${MAIN_DOMAIN:-}" ]]; then
+    print -u 2 "MAIN_DOMAIN not set"
+    exit 1
+elif [[ -z "${CERT_DIR:-}" ]] || [[ ! -d $CERT_DIR ]]; then
+    print -u 2 "CERT_DIR not set or not found"
+    exit 1
+elif [[ -z "${OUTPUT_DIR:-}" ]] || [[ ! -d $OUTPUT_DIR ]]; then
+    print -u 2 "OUTPUT_DIR not set or not found"
+    exit 1
+fi
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+if ! find "$CERT_DIR" -type f -name '*.json' -exec "$SCRIPT_DIR"/main '{}' \;
+then
+    print -u 2 "Initial cert extraction failed"
+    exit 1
+fi
+
+inotifyd - "${CERT_DIR}:ny" | while IFS=$'\t' read -r e d f; do
+    "$SCRIPT_DIR"/main "$d/$f"
+done
