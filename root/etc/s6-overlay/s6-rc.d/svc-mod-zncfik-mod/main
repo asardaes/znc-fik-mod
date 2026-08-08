@@ -8,7 +8,7 @@ if ! cert=$(jq -ec ".${CERT_RESOLVER}.Certificates[] | select(.domain.main == \"
     exit 0
 fi
 
-TMP_DIR=$(mktemp)
+TMP_DIR=$(mktemp -d)
 trap "rm -r $TMP_DIR" INT TERM EXIT
 
 jq -er '.certificate' <<<"$cert" | bas64 -d >"$TMP_DIR/cert.pem"
