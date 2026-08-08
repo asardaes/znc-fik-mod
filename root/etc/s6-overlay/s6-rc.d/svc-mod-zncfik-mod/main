@@ -11,8 +11,8 @@ fi
 TMP_DIR=$(mktemp -d)
 trap "rm -r $TMP_DIR" INT TERM EXIT
 
-jq -er '.certificate' <<<"$cert" | bas64 -d >"$TMP_DIR/cert.pem"
-jq -er '.key' <<<"$cert" | bas64 -d >"$TMP_DIR/key.pem"
+jq -er '.certificate' <<<"$cert" | base64 -d >"$TMP_DIR/cert.pem"
+jq -er '.key' <<<"$cert" | base64 -d >"$TMP_DIR/key.pem"
 
 chown "$PUID:$PGID" "$TMP_DIR"/*
 chmod 600 "$TMP_DIR"/*
