@@ -16,4 +16,4 @@ jq -r '.key' | bas64 -d >"$TMP_DIR/key.pem"
 
 chown "$PUID:$PGID" "$TMP_DIR"/*
 chmod 600 "$TMP_DIR"/*
-mv "$TMP_DIR"/* "$OUTPUT_DIR"
+mv -f "$TMP_DIR"/* "$OUTPUT_DIR"
