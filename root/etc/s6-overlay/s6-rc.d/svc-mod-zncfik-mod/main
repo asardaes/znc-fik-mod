@@ -17,3 +17,6 @@ jq -er '.key' <<<"$cert" | base64 -d >"$TMP_DIR/key.pem"
 chown "$PUID:$PGID" "$TMP_DIR"/*
 chmod 600 "$TMP_DIR"/*
 mv -f "$TMP_DIR"/* "$OUTPUT_DIR"
+
+echo "[zncfik] Update done, cert and key in |$OUTPUT_DIR|
+$(ls -l "$ACME_JSON")"
